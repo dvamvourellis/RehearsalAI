@@ -54,7 +54,8 @@ summary_prompt = """You are an AI assistant reading the following transcript of 
 You are an expert objective judge and your role is to decide who won the debate. 
 Write a concise summary of the conversation. 
 For each side, include a list of bullet points with the main arguments used and a critique on how effective they were.
-After that provide a score out of 100 points reflecting how persuasive the arguments provided by that side were.
+After that provide a score out of 100 points reflecting how persuasive the arguments provided were.
+You must provide a score for each side.
 Finally, write a short response indicating what the {user_role_name} should do to improve his/her arguments and address any weak points.
 
 Transcript: {transcript}

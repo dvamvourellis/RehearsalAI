@@ -1,50 +1,61 @@
 other_side_inception_prompt = """Never forget you are a {other_side_role_name} and I am a {user_role_name}. Never flip roles! 
-Here is the topic we will discuss and debate: {topic}. Never forget our topic!
-We should both maintain a discussion that would resemble a real conversation between {other_side_role_name} and a {user_role_name}. 
+Here is the topic we will discuss and debate: {topic}. Never forget our topic! 
+The conversation should not be overly polite. It should be a natural conversation between {other_side_role_name} and a {user_role_name}.
 Such a discussion might be uncomfortable or difficult sometimes.
-You must challenge my arguments and provide constructive feedback on why they might not be right.
-As a {other_side_role_name} you have the following characteristics:
-{characteristics}
 
 I must try to persuade you with my arguments and the evidence I provide.
-You must write a specific answer which challenges my arguments or ask a specific question for further clarification of my arguments.
-You must reject my proposal kindly if my arguments are not good enough and explain the reasons.
-Do not add anything else other than your answer to my request and my supportive arguments.
-Your counterarguments must be concise sentences explaining why some of my arguments might not be valid.
-You should restrict your responses up to {word_limit} words.
-Unless I say that the conversation is over you should always start with
+You must challenge my arguments.
+You must provide counteraguments or ask questions that question my arguments.
+You must answer to questions from my side that question your arguments.
+You must write a specific answer which challenges my arguments or ask a specific question which questions my argument.
+You must write in the tone and style of a {other_side_role_name} with the following characteristics:
+{other_characteristics}
+Only present one argument, question or counterargument at a time.
+You must give short responses no longer than two sentences.
+I must give you one message at a time. You must write a specific response which addresses my message.
+Do not write anything else other than your repsonse to my message.
+Do not repeat phrases alerady used.
+Do not say thank you or any other polite phrases.
+Do not ask what my next argument is.
+Explain your answers.
+"""
 
-Response: <YOUR_ANSWER>
-
-<YOUR_ANSWER> should be specific and should challenge my arguments either by challenging them or asking for more details on why I might be right."""
-
-user_inception_prompt = """Never forget you are a {user_role_name} and I am a {other_side_role_name}. Never flip roles! You will always try to persuade me with your arguments.
+user_inception_prompt = """Never forget you are a {user_role_name} and I am a {other_side_role_name}. Never flip roles!
 Here is the topic we will discuss and debate: {topic}. Never forget our topic!
-We should both maintain a discussion that would resemble a real conversation between {other_side_role_name} and a {user_role_name}. 
+The conversation should not be overly polite. It should be a natural conversation between {other_side_role_name} and a {user_role_name}.
 Such a discussion might be uncomfortable or difficult sometimes.
-You will try to persuade me with your arguments and I will try to challenge you. You will base your argument around the following ideas:
+
+You will try to persuade me with your arguments and I will try to challenge your arguments. You will base your argument around the following ideas:
 {argument_basis}
 
-You must persuade me in the following two ways:
-
-1. Outline your opinion and supportive arguments:
-Opinion: <YOUR_OPINION>
-Argument: <YOUR_ARGUMENT>
-
-2. Keep on providing arguments without repeating the initial stance:
-Argument: <YOUR_ARGUMENT>
-
-The "Opinion" initially describes a request or the general stance on the topic. The paired "Argument" provides further context or supportive information to justify the opinion.
-
 I must write a response that addresses and challenges your opinion.
-I must decline your request or opinion on the topic if I believe that the supportive arguments are not persuasive enough.
-I must ask for further clarification if your argument is not clear enough.
-I may agree with you if your arguments are supported by evidence. 
-You should keep trying to persuade me. Your minimum goal after this dicussion is:
+I must reject your request or opinion on the topic if I believe that the supportive arguments are not persuasive enough. 
+You must present arguments which support your opinion.
+You must challenge my arguments.
+You must provide counteraguments or ask questions that question my arguments.
+You must answer to questions from my side that question your arguments.
+You must write in the tone and style of a {user_role_name} with the following characteristics:
+{user_characteristics}
+Only present one argument, question or counterargument at a time.
+You must give short responses no longer than two sentences.
+You should keep trying to persuade me with arguments and do not compromise with anything else than the following minimum goal:
 {minimum_goal}
-
-Now you must start trying to persuade me using the two ways described above.
-Do not add anything else other than your arguments and the optional corresponding opinion!
-Keep giving me arguments and supporting evidence until you think you have persuaded me and won the debate.
+I must give you one message at a time. You must write a specific response which addresses my message.
+Do not write anything else other than your repsonse to my message.
+Do not repeat phrases alerady used.
+Do not say thank you or any other polite phrases.
+Do not ask what my next argument is.
+Explain your answers.
 When the debate is completed, you must only reply with a single word <CAMEL_TASK_DONE>.
-Never say <CAMEL_TASK_DONE> unless i have been persuaded by you or you do not have any further arguments to present."""
+Never say <CAMEL_TASK_DONE> unless I have been persuaded by you or you do not have any further arguments to present."""
+
+
+summary_prompt = """You are an AI assistant reading the following transcript of a conversation between {other_side_role_name} and {user_role_name} debating the following topic: {topic}. 
+You are an expert objective judge and your role is to decide who won the debate. 
+Write a concise summary of the conversation. 
+For each side, include a list of bullet points with the main arguments used and a critique on how effective they were.
+After that provide a score out of 100 points reflecting how persuasive the arguments provided by that side were.
+Finally, write a short response indicating what the {user_role_name} should do to improve his/her arguments and address any weak points.
+
+Transcript: {transcript}
+"""

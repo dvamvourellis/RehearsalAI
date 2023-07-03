@@ -7,6 +7,7 @@ from typing import Optional
 
 import os
 from langchain.chat_models import ChatOpenAI
+from langchain import PromptTemplate, LLMChain
 from langchain.prompts.chat import SystemMessagePromptTemplate
 from langchain.schema import (
     AIMessage,
@@ -16,7 +17,11 @@ from langchain.schema import (
 )
 
 from agent.camel_agent import CAMELAgent
-from agent.prompt_templates import other_side_inception_prompt, user_inception_prompt
+from agent.prompt_templates import (
+    other_side_inception_prompt,
+    user_inception_prompt,
+    summary_prompt,
+)
 
 
 class Rehearsal:
@@ -26,20 +31,20 @@ class Rehearsal:
         model_name: Optional[str] = "gpt-3.5-turbo",
         user_role_name: str = None,
         other_side_role_name: str = None,
-        characteristics: List[str] = [],
+        other_characteristics: List[str] = [],
+        user_characteristics: List[str] = [],
         argument_basis: str = None,
         minimum_goal: str = None,
         topic: str = None,
-        word_limit: int = 50,
         temperature: float = 0.5,
         chat_turn_limit: int = 10,
     ):
         # initialize template variables
         self.user_role_name = user_role_name
         self.other_side_role_name = other_side_role_name
-        self.word_limit = word_limit
         self.topic = topic
-        self.characteristics = characteristics
+        self.user_characteristics = user_characteristics
+        self.other_characteristics = other_characteristics
         self.argument_basis = argument_basis
         self.minimum_goal = minimum_goal
 
@@ -76,7 +81,8 @@ class Rehearsal:
         return llm
 
     def _get_sys_msgs(self):
-        characteristics_str = ", ".join(self.characteristics) + "."
+        user_characteristics_str = ", ".join(self.user_characteristics) + "."
+        other_characteristics_str = ", ".join(self.other_characteristics) + "."
         other_side_sys_template = SystemMessagePromptTemplate.from_template(
             template=other_side_inception_prompt
         )
@@ -84,8 +90,7 @@ class Rehearsal:
             other_side_role_name=self.other_side_role_name,
             user_role_name=self.user_role_name,
             topic=self.topic,
-            characteristics=characteristics_str,
-            word_limit=self.word_limit,
+            other_characteristics=other_characteristics_str,
         )[0]
 
         user_sys_template = SystemMessagePromptTemplate.from_template(
@@ -97,6 +102,7 @@ class Rehearsal:
             topic=self.topic,
             argument_basis=self.argument_basis,
             minimum_goal=self.minimum_goal,
+            user_characteristics=user_characteristics_str,
         )[0]
 
         return other_side_sys_msg, user_sys_msg
@@ -113,7 +119,7 @@ class Rehearsal:
         other_side_msg = HumanMessage(
             content=(
                 f"{self.user_sys_msg.content}. "
-                "Now start to give me your opinion on the topic and the supproting arguments. "
+                "Now start to give me your opinion on the topic and the supporting arguments. "
             )
         )
         user_msg = HumanMessage(content=f"{self.other_side_sys_msg.content}")
@@ -134,3 +140,31 @@ class Rehearsal:
             self.transcipt.append(print_msg)
             if "<CAMEL_TASK_DONE>" in user_msg.content:
                 break
+
+    def generate_summary(self):
+        if len(self.transcipt) < 1:
+            print("No conversation found. Please run discussion first.")
+            return None
+
+        transcript_str = " ".join(self.transcipt)
+
+        prompt_template = PromptTemplate(
+            input_variables=[
+                "other_side_role_name",
+                "user_role_name",
+                "topic",
+                "transcript",
+            ],
+            template=summary_prompt,
+        )
+
+        llm_chain = LLMChain(llm=self.llm, prompt=prompt_template)
+
+        summary = llm_chain.predict(
+            other_side_role_name=self.other_side_role_name,
+            user_role_name=self.user_role_name,
+            topic=self.topic,
+            transcript=transcript_str,
+        )
+
+        return summary

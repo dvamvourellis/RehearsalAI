@@ -6,7 +6,9 @@ import streamlit as st
 import os
 
 path = os.getcwd()
+dir_list = os.listdir(path)
 st.write(path)
+st.write(dir_list)
 
 from agent.rehearsal import Rehearsal
 from streamlit_chat import message

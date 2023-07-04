@@ -2,8 +2,13 @@ import sys
 
 sys.path.append("../")
 
-from agent.rehearsal import Rehearsal
 import streamlit as st
+import os
+
+path = os.getcwd()
+st.write(path)
+
+from agent.rehearsal import Rehearsal
 from streamlit_chat import message
 from langchain.schema import (
     AIMessage,

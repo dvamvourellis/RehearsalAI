@@ -57,7 +57,9 @@ For each side of the debate do the following:
 2. Write a critique of how effective these arguments were.
 3. Provide a score out of 100 points reflecting how persuasive the arguments provided were.
 
-Finally, write a short response indicating what the {user_role_name} should do to improve his/her arguments and address any weak points.
+Make sure to include all of the above listed items for each side individually.
+
+After that, write a short response indicating what the {user_role_name} should do to improve his/her arguments and address any weak points.
 You must provide specific examples of arguments that the {user_role_name} could use to strengthen his/her position backed by evidence.
 
 Transcript: {transcript}

@@ -8,8 +8,7 @@ You must challenge my arguments.
 You must provide counteraguments or ask questions that question my arguments.
 You must answer to questions from my side that question your arguments.
 You must write a specific answer which challenges my arguments or ask a specific question which questions my argument.
-You must write in the tone and style of a {other_side_role_name} with the following characteristics:
-{other_characteristics}
+You must write in the tone and style of a {other_side_role_name} with the following characteristics: {other_characteristics}
 Only present one argument, question or counterargument at a time.
 You must give short responses no longer than two sentences.
 I must give you one message at a time. You must write a specific response which addresses my message.
@@ -35,8 +34,7 @@ You must present arguments which support your opinion.
 You must challenge my arguments.
 You must provide counteraguments or ask questions that question my arguments.
 You must answer to questions from my side that question your arguments.
-You must write in the tone and style of a {user_role_name} with the following characteristics:
-{user_characteristics}
+You must write in the tone and style of a {user_role_name} with the following characteristics: {user_characteristics}
 Only present one argument, question or counterargument at a time.
 You must give short responses no longer than two sentences.
 You should keep trying to persuade me with arguments. 
@@ -54,10 +52,11 @@ Never say <CAMEL_TASK_DONE> unless I have been persuaded by you or you do not ha
 
 summary_prompt = """You are an AI assistant reading the following transcript of a conversation between {other_side_role_name} and {user_role_name} debating the following topic: {topic}. 
 You are an expert objective judge and your role is to decide who won the debate. 
-First, write a concise summary of the conversation. 
-Then, for each side, include a list of bullet points with the main arguments used and a critique on how effective they were.
-After that provide a score out of 100 points reflecting how persuasive the arguments provided were.
-You must provide a score for each side.
+For each side of the debate do the following:
+1. Write list of bullet points with the main arguments used 
+2. Write a critique of how effective these arguments were.
+3. Provide a score out of 100 points reflecting how persuasive the arguments provided were.
+
 Finally, write a short response indicating what the {user_role_name} should do to improve his/her arguments and address any weak points.
 You must provide specific examples of arguments that the {user_role_name} could use to strengthen his/her position backed by evidence.
 

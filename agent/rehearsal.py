@@ -88,19 +88,21 @@ class Rehearsal:
         return llm
 
     def _get_sys_msgs(self):
-        user_characteristics_str = ", ".join(self.user_characteristics) + "."
-        other_characteristics_str = ", ".join(self.other_characteristics) + "."
-        other_side_sys_template = SystemMessagePromptTemplate.from_template(
-            template=other_side_inception_prompt
-        )
-        other_side_sys_msg = other_side_sys_template.format_messages(
-            other_side_role_name=self.other_side_role_name,
-            user_role_name=self.user_role_name,
-            topic=self.topic,
-            other_characteristics=other_characteristics_str,
-        )[0]
+        if (
+            len(self.user_characteristics) == 1 and self.user_characteristics[0] == ""
+        ) or len(self.user_characteristics) == 0:
+            user_characteristics_str = ""
+        else:
+            user_characteristics_str = ", ".join(self.user_characteristics) + "."
+        if (
+            len(self.other_characteristics) == 1 and self.other_characteristics[0] == ""
+        ) or len(self.other_characteristics) == 0:
+            other_characteristics_str = ""
+        else:
+            other_characteristics_str = ", ".join(self.other_characteristics) + "."
 
         user_inception_prompt_final = user_inception_prompt
+        other_side_inception_prompt_final = other_side_inception_prompt
 
         if self.argument_basis == "":
             user_inception_prompt_final = user_inception_prompt_final.replace(
@@ -113,6 +115,30 @@ class Rehearsal:
                 "Do not compromise with anything else than the following minimum goal:",
                 "",
             )
+
+        if user_characteristics_str == "":
+            user_inception_prompt_final = user_inception_prompt_final.replace(
+                "with the following characteristics:",
+                ".",
+            )
+
+        if other_characteristics_str == "":
+            other_side_inception_prompt_final = (
+                other_side_inception_prompt_final.replace(
+                    "with the following characteristics:",
+                    ".",
+                )
+            )
+
+        other_side_sys_template = SystemMessagePromptTemplate.from_template(
+            template=other_side_inception_prompt_final
+        )
+        other_side_sys_msg = other_side_sys_template.format_messages(
+            other_side_role_name=self.other_side_role_name,
+            user_role_name=self.user_role_name,
+            topic=self.topic,
+            other_characteristics=other_characteristics_str,
+        )[0]
 
         user_sys_template = SystemMessagePromptTemplate.from_template(
             template=user_inception_prompt_final

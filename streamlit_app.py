@@ -28,13 +28,13 @@ with st.sidebar:
     chat_turn_limit = st.slider("Number of turns per side", 1, 15, 5)
 
     user_role_characteristics = st.text_input(
-        f"What are the characteristics of {user_role_name}? Please enter comma separated list of adjectives.",
+        f"What are the characteristics of {user_role_name}? Please enter comma separated list of adjectives. (Optional)",
         key="user_chars",
     )
     user_characteristics = user_role_characteristics.split(",")
 
     other_side_role_characteristics = st.text_input(
-        f"What are the characteristics of {other_side_role_name}? Please enter comma separated list of adjectives.",
+        f"What are the characteristics of {other_side_role_name}? Please enter comma separated list of adjectives. (Optional)",
         key="other_side_chars",
     )
     other_side_characteristics = other_side_role_characteristics.split(",")

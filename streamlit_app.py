@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append("../")
-
 import streamlit as st
 from agent.rehearsal import Rehearsal
 from streamlit_chat import message
@@ -28,6 +24,8 @@ with st.sidebar:
     topic = st.text_input(
         "Input a few words about the topic of the discussion.", key="topic"
     )
+
+    chat_turn_limit = st.slider("Number of turns per side", 1, 15, 5)
 
     user_role_characteristics = st.text_input(
         f"What are the characteristics of {user_role_name}? Please enter comma separated list of adjectives.",
@@ -67,7 +65,7 @@ else:
             minimum_goal=minimum_goal,
             topic=topic,
             temperature=0.5,
-            chat_turn_limit=5,
+            chat_turn_limit=chat_turn_limit,
         )
 
         with st.container():
@@ -81,11 +79,8 @@ else:
             user_msg = HumanMessage(content=f"{rehearsal.other_side_sys_msg.content}")
 
             # Storing the chat
-            if "generated" not in st.session_state:
-                st.session_state["generated"] = []
-
-            if "past" not in st.session_state:
-                st.session_state["past"] = other_side_msg
+            if "messages" not in st.session_state:
+                st.session_state["messages"] = []
 
             n = 0
             while n < rehearsal.chat_turn_limit:
@@ -93,18 +88,24 @@ else:
                 user_ai_msg = rehearsal.user_agent.step(other_side_msg)
                 user_msg = HumanMessage(content=user_ai_msg.content)
                 print_msg = f"{rehearsal.user_role_name}:\n\n{user_msg.content}\n\n"
-                st.write(print_msg)
                 rehearsal.transcipt.append(print_msg)
-                # st.session_state.generated.append(user_msg.content)
+                st.session_state.messages.append(
+                    {"role": "user", "content": user_msg.content}
+                )
+                with st.chat_message("user"):
+                    st.markdown(user_msg.content)
 
                 other_side_ai_msg = rehearsal.other_side_agent.step(user_msg)
                 other_side_msg = HumanMessage(content=other_side_ai_msg.content)
                 print_msg = (
                     f"{rehearsal.other_side_role_name}:\n\n{other_side_msg.content}\n\n"
                 )
-                st.write(print_msg)
                 rehearsal.transcipt.append(print_msg)
-                # st.session_state.past.append(other_side_msg.content)
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": other_side_msg.content}
+                )
+                with st.chat_message("assistant"):
+                    st.markdown(other_side_msg.content)
 
                 if "<CAMEL_TASK_DONE>" in user_msg.content:
                     break

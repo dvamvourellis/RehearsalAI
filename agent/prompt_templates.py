@@ -38,8 +38,8 @@ You must write in the tone and style of a {user_role_name} with the following ch
 {user_characteristics}
 Only present one argument, question or counterargument at a time.
 You must give short responses no longer than two sentences.
-You should keep trying to persuade me with arguments and do not compromise with anything else than the following minimum goal:
-{minimum_goal}
+You should keep trying to persuade me with arguments. 
+Do not compromise with anything else than the following minimum goal: {minimum_goal}
 I must give you one message at a time. You must write a specific response which addresses my message.
 Do not write anything else other than your repsonse to my message.
 Do not repeat phrases alerady used.
@@ -52,8 +52,8 @@ Never say <CAMEL_TASK_DONE> unless I have been persuaded by you or you do not ha
 
 summary_prompt = """You are an AI assistant reading the following transcript of a conversation between {other_side_role_name} and {user_role_name} debating the following topic: {topic}. 
 You are an expert objective judge and your role is to decide who won the debate. 
-Write a concise summary of the conversation. 
-For each side, include a list of bullet points with the main arguments used and a critique on how effective they were.
+First, write a concise summary of the conversation. 
+Then, for each side, include a list of bullet points with the main arguments used and a critique on how effective they were.
 After that provide a score out of 100 points reflecting how persuasive the arguments provided were.
 You must provide a score for each side.
 Finally, write a short response indicating what the {user_role_name} should do to improve his/her arguments and address any weak points.

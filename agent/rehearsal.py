@@ -45,8 +45,15 @@ class Rehearsal:
         self.topic = topic
         self.user_characteristics = user_characteristics
         self.other_characteristics = other_characteristics
-        self.argument_basis = argument_basis
-        self.minimum_goal = minimum_goal
+
+        if argument_basis is None:
+            self.argument_basis = ""
+        else:
+            self.argument_basis = argument_basis
+        if minimum_goal is None:
+            self.minimum_goal = ""
+        else:
+            self.minimum_goal = minimum_goal
 
         # initialize maximum number of turns to complete dialogue
         self.chat_turn_limit = chat_turn_limit
@@ -93,8 +100,22 @@ class Rehearsal:
             other_characteristics=other_characteristics_str,
         )[0]
 
+        user_inception_prompt_final = user_inception_prompt
+
+        if self.argument_basis == "":
+            user_inception_prompt_final = user_inception_prompt_final.replace(
+                "You will try to persuade me with your arguments and I will try to challenge your arguments. You will base your argument around the following ideas:",
+                "",
+            )
+
+        if self.minimum_goal == "":
+            user_inception_prompt_final = user_inception_prompt_final.replace(
+                "Do not compromise with anything else than the following minimum goal:",
+                "",
+            )
+
         user_sys_template = SystemMessagePromptTemplate.from_template(
-            template=user_inception_prompt
+            template=user_inception_prompt_final
         )
         user_sys_msg = user_sys_template.format_messages(
             other_side_role_name=self.other_side_role_name,
